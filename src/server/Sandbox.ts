@@ -1,12 +1,11 @@
-import { dir, DirectoryResult } from "tmp-promise";
-import { initConfigsToTmpWithVersion, runWithArgsAndVersion } from "../binary/binaryExecution";
+import { runWithArgsAndVersion } from "../binary/binaryExecution";
 import { SandboxConfig, setSandboxConfig, setSandboxGenesis } from "./config";
 import { ChildProcess } from "child_process";
-import { acquireOrLockPort, rpcSocket } from "./sandboxUtils";
+import { getPorts, initConfigsWithVersion, spawnSandbox } from "./sandboxUtils";
 import { unlock } from "proper-lockfile";
 import { rm } from "fs/promises";
 import { SandboxErrors, TypedError } from "../errors";
-import got from "got";
+import { join } from "path";
 
 export const DEFAULT_NEAR_SANDBOX_VERSION = "2.6.5";
 
@@ -74,31 +73,28 @@ export class Sandbox {
     static async start(params: StartParams): Promise<Sandbox> {
         const config: SandboxConfig = params.config || {};
         const version: string = params.version || DEFAULT_NEAR_SANDBOX_VERSION;
-        // Ensure Binary downloaded with specified version
-        // Initialize tmp directory with the specified version
-        // get tmp directory with default configs
-        const tmpDir = await this.initConfigsWithVersion(version);
-        // get ports
-        const { port: rpcPort, lockFilePath: rpcPortLock } = await acquireOrLockPort(config?.rpcPort);
-        const { port: netPort, lockFilePath: netPortLock } = await acquireOrLockPort(config?.netPort);
 
-        const rpcAddr = rpcSocket(rpcPort);
-        const netAddr = rpcSocket(netPort);
-        // set sandbox configs
-        await setSandboxGenesis(tmpDir.path, config);
-        await setSandboxConfig(tmpDir.path, config);
-        // create options and args to spawn the process
-        const options = ["--home", tmpDir.path, "run", "--rpc-addr", rpcAddr, "--network-addr", netAddr];
-        // Run sandbox with the specified version and arguments, get ChildProcess
-        const childProcess = await runWithArgsAndVersion(version, options);
+        const homeDir = await initConfigsWithVersion(version);
+        await setSandboxGenesis(homeDir.path, config);
+        await setSandboxConfig(homeDir.path, config);
+        const { rpcAddr, netAddr, rpcPortLock, netPortLock } = await getPorts(config.rpcPort, config.netPort);
+        const { rpcUrl, childProcess } = await spawnSandbox(version, homeDir.path, rpcAddr, netAddr);
+        return new Sandbox(rpcUrl, homeDir.path, childProcess, rpcPortLock, netPortLock);
+    }
 
-        const rpcUrl = `http://${rpcAddr}`;
+    static async startWithPatch(params: StartParams, pathToPatch: string): Promise<Sandbox> {
+        const config: SandboxConfig = params.config || {};
+        const version: string = params.version || DEFAULT_NEAR_SANDBOX_VERSION;
 
-        // Add delay to ensure the process is ready
-        await this.waitUntilReady(rpcUrl);
+        const { rpcAddr, netAddr, rpcPortLock, netPortLock } = await getPorts(config.rpcPort, config.netPort);
 
-        // return new Sandbox instance
-        return new Sandbox(rpcUrl, tmpDir.path, childProcess, rpcPortLock, netPortLock);
+        const { rpcUrl, childProcess } = await spawnSandbox(version, pathToPatch, rpcAddr, netAddr);
+        return new Sandbox(rpcUrl, pathToPatch, childProcess, rpcPortLock, netPortLock);
+    }
+
+    async getState(): Promise<string> {
+        await runWithArgsAndVersion("2.6.5", ["--home", this.homeDir, "view-state", "dump-state", "--stream"]);
+        return join(this.homeDir, "output");
     }
     /**
      * Destroys the running sandbox environment by:
@@ -142,32 +138,5 @@ export class Sandbox {
                 SandboxErrors.TearDownFailed,
                 new Error(combined));
         }
-    }
-
-    private static async initConfigsWithVersion(version: string): Promise<DirectoryResult> {
-        const tmpDir = await dir({ unsafeCleanup: true });
-        await initConfigsToTmpWithVersion(version, tmpDir);
-        return tmpDir;
-    }
-
-    private static async waitUntilReady(rpcUrl: string) {
-        const timeoutSecs = parseInt(process.env["NEAR_RPC_TIMEOUT_SECS"] || '10');
-        const attempts = timeoutSecs * 2;
-        let lastError: unknown = null;
-        for (let i = 0; i < attempts; i++) {
-            try {
-                const response = await got(`${rpcUrl}/status`, { throwHttpErrors: false });
-                if (response.statusCode >= 200 && response.statusCode < 300) {
-                    return;
-                }
-            } catch (error) {
-                lastError = error;
-            }
-            await new Promise(resolve => setTimeout(resolve, 500));
-        }
-        throw new TypedError("Sandbox failed to become ready within the timeout period.",
-            SandboxErrors.RunFailed,
-            lastError instanceof Error ? lastError : new Error(String(lastError))
-        );
     }
 }

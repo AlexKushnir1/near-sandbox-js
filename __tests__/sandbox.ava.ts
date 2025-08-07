@@ -117,3 +117,21 @@ test('Another process can`t bind sandbox`s rpcPort', async (t) => {
         await sandbox.tearDown();
     }
 });
+//TODO: Add handling for rust errors
+// test.only('pass two same accounts to additionalAccounts', async (t) => {
+//     const account = GenesisAccount.createRandom("sandbox");
+//     const config: SandboxConfig = {
+//         additionalAccounts: [account],
+//     };
+//     const sandbox = await Sandbox.start({ config });
+
+//     t.truthy(sandbox);
+//     // const genesisFilePath = join(sandbox.homeDir, "genesis.json");
+//     // const genesisContent = JSON.parse(await fs.promises.readFile(genesisFilePath, 'utf-8'));
+
+//     // const records = genesisContent.records.filter((record: any) => record.Account && record.Account.account_id === account.accountId);
+//     // t.is(records.length, 1, "Should only have one record for the same account");
+
+//     await sandbox.tearDown();
+// });
+

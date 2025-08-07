@@ -36,7 +36,8 @@
     "typescript": "5.4.5",
     "@near-js/accounts": "2.2.4",
     "@near-js/signers": "2.2.4",
-    "@near-js/providers": "2.2.4"
+    "@near-js/providers": "2.2.4",
+    "near-hello": "0.5.1"
   },
   "scripts": {
     "test": "ava",

@@ -4,12 +4,16 @@ import * as net from "net";
 import { join } from "path";
 import { tmpdir } from "os";
 import { lock } from 'proper-lockfile';
-import { TcpAndLockErrors, TypedError } from "../errors";
+import { SandboxErrors, TcpAndLockErrors, TypedError } from "../errors";
+import got from "got";
+import { initConfigsToTmpWithVersion, runWithArgsAndVersion } from "../binary/binaryExecution";
+import { dir, DirectoryResult } from "tmp-promise";
+import { ChildProcess } from "child_process";
 
 
 const DEFAULT_RPC_HOST = '127.0.0.1';
 
-export function rpcSocket(port: number): string {
+function rpcSocket(port: number): string {
     return `${DEFAULT_RPC_HOST}:${port}`;
 }
 
@@ -86,4 +90,61 @@ async function createLockFileForPort(port: number): Promise<string> {
     }
 
     return lockFilePath;
+}
+
+export async function waitUntilReady(rpcUrl: string) {
+    const timeoutSecs = parseInt(process.env["NEAR_RPC_TIMEOUT_SECS"] || '10');
+    const attempts = timeoutSecs * 2;
+    let lastError: unknown = null;
+    for (let i = 0; i < attempts; i++) {
+        try {
+            const response = await got(`${rpcUrl}/status`, { throwHttpErrors: false });
+            if (response.statusCode >= 200 && response.statusCode < 300) {
+                return;
+            }
+        } catch (error) {
+            lastError = error;
+        }
+        await new Promise(resolve => setTimeout(resolve, 500));
+    }
+    throw new TypedError("Sandbox failed to become ready within the timeout period.",
+        SandboxErrors.RunFailed,
+        lastError instanceof Error ? lastError : new Error(String(lastError))
+    );
+}
+
+export async function getPorts(providedRpcPort?: number, providedNetPort?: number): Promise<{
+    rpcAddr: string;
+    netAddr: string;
+    rpcPortLock: string;
+    netPortLock: string;
+}> {
+    const { port: rpcPort, lockFilePath: rpcPortLock } = await acquireOrLockPort(providedRpcPort);
+    const { port: netPort, lockFilePath: netPortLock } = await acquireOrLockPort(providedNetPort);
+
+    return {
+        rpcAddr: rpcSocket(rpcPort),
+        netAddr: rpcSocket(netPort),
+        rpcPortLock,
+        netPortLock,
+    };
+}
+
+export async function initConfigsWithVersion(version: string): Promise<DirectoryResult> {
+    const tmpDir = await dir({ unsafeCleanup: true });
+    await initConfigsToTmpWithVersion(version, tmpDir);
+    return tmpDir;
+}
+
+export async function spawnSandbox(
+    version: string,
+    homeDir: string,
+    rpcAddr: string,
+    netAddr: string,
+): Promise<{ rpcUrl: string, childProcess: ChildProcess }> {
+    const options = ["--home", homeDir, "run", "--rpc-addr", rpcAddr, "--network-addr", netAddr];
+    const childProcess = await runWithArgsAndVersion(version, options);
+    const rpcUrl = `http://${rpcAddr}`;
+    await waitUntilReady(rpcUrl);
+    return { rpcUrl, childProcess };
 }
