@@ -7,6 +7,7 @@ import { unlock } from "proper-lockfile";
 import { rm } from "fs/promises";
 import { SandboxErrors, TypedError } from "../errors";
 import got from "got";
+import { join } from "path";
 
 export const DEFAULT_NEAR_SANDBOX_VERSION = "2.6.5";
 
@@ -99,6 +100,38 @@ export class Sandbox {
 
         // return new Sandbox instance
         return new Sandbox(rpcUrl, tmpDir.path, childProcess, rpcPortLock, netPortLock);
+    }
+
+        static async startWithPatch(params: StartParams, tmpDir: string): Promise<Sandbox> {
+        const config: SandboxConfig = params.config || {};
+        const version: string = params.version || DEFAULT_NEAR_SANDBOX_VERSION;
+
+        // get ports
+        const { port: rpcPort, lockFilePath: rpcPortLock } = await acquireOrLockPort(config?.rpcPort);
+        const { port: netPort, lockFilePath: netPortLock } = await acquireOrLockPort(config?.netPort);
+
+        const rpcAddr = rpcSocket(rpcPort);
+        const netAddr = rpcSocket(netPort);
+        // set sandbox configs
+        await setSandboxGenesis(tmpDir, config);
+        await setSandboxConfig(tmpDir, config);
+        // create options and args to spawn the process
+        const options = ["--home", tmpDir, "run", "--rpc-addr", rpcAddr, "--network-addr", netAddr];
+        // Run sandbox with the specified version and arguments, get ChildProcess
+        const childProcess = await runWithArgsAndVersion(version, options);
+
+        const rpcUrl = `http://${rpcAddr}`;
+
+        // Add delay to ensure the process is ready
+        await this.waitUntilReady(rpcUrl);
+
+        // return new Sandbox instance
+        return new Sandbox(rpcUrl, tmpDir, childProcess, rpcPortLock, netPortLock);
+    }
+
+    async getState(): Promise<string> {
+        await runWithArgsAndVersion("2.6.5", ["--home", this.homeDir, "view-state", "dump-state", "--stream"]);
+        return join(this.homeDir, 'output');
     }
     /**
      * Destroys the running sandbox environment by:

@@ -17,6 +17,7 @@
     "@near-js/tokens": "^2.2.2",
     "got": "^11.8.6",
     "json-merge-patch": "^1.0.2",
+    "near-hello": "^0.5.1",
     "proper-lockfile": "^4.1.2",
     "tar": "^6.2.0",
     "tmp-promise": "^3.0.3"
@@ -26,6 +27,9 @@
     "@changesets/cli": "2.24.4",
     "@commitlint/cli": "17.0.3",
     "@commitlint/config-conventional": "17.0.3",
+    "@near-js/accounts": "2.2.4",
+    "@near-js/providers": "2.2.4",
+    "@near-js/signers": "2.2.4",
     "@sindresorhus/tsconfig": "^2.0.0",
     "@types/json-merge-patch": "^1.0.0",
     "@types/node": "20.0.0",
@@ -33,10 +37,7 @@
     "@types/tar": "^4.0.5",
     "ava": "3.15.0",
     "ts-node": "^10.1.0",
-    "typescript": "5.4.5",
-    "@near-js/accounts": "2.2.4",
-    "@near-js/signers": "2.2.4",
-    "@near-js/providers": "2.2.4"
+    "typescript": "5.4.5"
   },
   "scripts": {
     "test": "ava",

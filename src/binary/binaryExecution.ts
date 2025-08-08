@@ -34,9 +34,9 @@ export async function runWithArgsAndVersion(
     options: SpawnOptions = { stdio: [null, null, 'inherit'] }
 ): Promise<ChildProcess> {
     const binPath = await ensureBinWithVersion(version);
-    return spawn(
-        binPath,
-        args,
-        options
-    );
+return spawn(
+    binPath,
+    args,
+    options
+);
 }

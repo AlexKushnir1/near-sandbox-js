@@ -28,7 +28,7 @@ export const DEFAULT_BALANCE = NEAR.toUnits(10000);
   * balance - The initial balance of the account in yoctoNEAR.
   */
 export class GenesisAccount {
-  accountId: string; 
+  accountId: string;
   publicKey: string;
   privateKey: string;
   balance: bigint;
@@ -188,21 +188,31 @@ async function overwriteGenesis(
   const genesisPath = join(homeDir, 'genesis.json');
   const genesisRaw = await fs.readFile(genesisPath, 'utf-8');
   const genesisObj = JSON.parse(genesisRaw);
+  let totalSupply;
+  let accountsToAdd: GenesisAccount[] = [];
+  if (config?.additionalGenesis && 'total_supply' in config.additionalGenesis) {
+    totalSupply = BigInt(config.additionalGenesis['total_supply']);
+    accountsToAdd = config.additionalAccounts ?? [];
 
-  let totalSupply = BigInt(genesisObj['total_supply']);
-  if (totalSupply === null || totalSupply === undefined) {
-    throw new TypedError("Total supply not found in default genesis.json", SandboxErrors.InvalidConfig);
+    for (const account of accountsToAdd) {
+      totalSupply += account.balance;
+    }
+    config.additionalGenesis['total_supply'] = totalSupply.toString();
+    genesisObj['records'] = [];
+  } else {
+    totalSupply = BigInt(genesisObj['total_supply']);
+
+    accountsToAdd = [
+      GenesisAccount.createDefault(),
+      ...(config?.additionalAccounts ?? [])
+    ];
+
+    for (const account of accountsToAdd) {
+      totalSupply += account.balance;
+    }
+
+    genesisObj['total_supply'] = totalSupply.toString();
   }
-
-  const accountsToAdd: GenesisAccount[] = [
-    GenesisAccount.createDefault(),
-    ...(config?.additionalAccounts ?? [])
-  ];
-
-  for (const account of accountsToAdd) {
-    totalSupply += account.balance;
-  }
-  genesisObj['total_supply'] = totalSupply.toString();
 
   if (!Array.isArray(genesisObj['records'])) {
     throw new TypedError("Expected 'records' to be an array in default genesis.json", SandboxErrors.InvalidConfig);
