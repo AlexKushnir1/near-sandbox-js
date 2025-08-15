@@ -1,5 +1,5 @@
 import { spawnWithArgsAndVersion } from "./binary/binaryExecution";
-import { DEFAULT_NEAR_SANDBOX_VERSION } from "./server/Sandbox";
+import { DEFAULT_NEAR_SANDBOX_VERSION } from "./sandbox/Sandbox";
 
 async function run() {
     try {
