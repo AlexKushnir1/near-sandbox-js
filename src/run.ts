@@ -6,7 +6,7 @@ async function run() {
         if (process.argv.length < 3) {
             process.argv.push("--help");
         }
-        const sandboxProcess = await spawnWithArgsAndVersion(DEFAULT_NEAR_SANDBOX_VERSION, process.argv.slice(2), { stdio: [null, 'inherit', 'inherit'] });
+        const sandboxProcess = await spawnWithArgsAndVersion(DEFAULT_NEAR_SANDBOX_VERSION, process.argv.slice(2), [null, 'inherit', 'inherit']);
 
         sandboxProcess.on("exit", (code) => {
             if (code !== 0) {
