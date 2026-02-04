@@ -37,7 +37,6 @@
     "@near-js/crypto": "^2.2.2",
     "@near-js/providers": "2.2.5",
     "@near-js/signers": "2.2.5",
-    "@sindresorhus/tsconfig": "^2.0.0",
     "@types/json-merge-patch": "^1.0.0",
     "@types/node": "20.0.0",
     "@types/proper-lockfile": "^4.1.4",
