@@ -20,7 +20,7 @@ export enum TcpAndLockErrors {
 
 export class TypedError extends Error {
     type: SandboxErrors | BinaryErrors | TcpAndLockErrors | "UntypedError";
-    cause?: Error;
+    cause?: Error | undefined;
     constructor(message?: string, type?: SandboxErrors | BinaryErrors | TcpAndLockErrors | "UntypedError", cause?: Error) {
         super(message);
         this.type = type || "UntypedError";
