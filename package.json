@@ -1,25 +1,21 @@
 {
   "name": "near-sandbox",
-  "version": "0.2.4",
-  "description": "CLI tool for testing NEAR smart contracts",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "version": "0.3.0",
+  "description": "library to run a local NEAR blockchain node for development and testing",
+  "repository": "https://github.com/near/near-sandbox-js",
+  "author": "Near Inc (team@near.org)",
+  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": "./dist/index.js"
     }
   },
   "bin": {
     "near-sandbox": "./run.js",
     "sandbox": "./run.js"
   },
-  "repository": "https://github.com/near/sandbox",
-  "author": "Near Inc (team@near.org)",
   "license": "MIT",
-  "private": false,
   "dependencies": {
     "@near-js/tokens": "^2.2.2",
     "got": "^11.8.6",
@@ -29,6 +25,7 @@
     "tmp-promise": "^3.0.3"
   },
   "devDependencies": {
+    "@ava/typescript": "^6.0.0",
     "@changesets/changelog-github": "0.4.6",
     "@changesets/cli": "2.24.4",
     "@commitlint/cli": "17.0.3",
@@ -43,14 +40,13 @@
     "@types/tar": "^4.0.5",
     "ava": "6.2.0",
     "near-hello": "0.5.1",
-    "ts-node": "^10.1.0",
-    "tsup": "^8.5.1",
-    "tsx": "^4.20.6",
+    "ts-node": "^10.9.2",
     "typescript": "5.4.5"
   },
   "scripts": {
     "test": "DEFAULT_FINALITY=optimistic ava",
-    "build": "tsup",
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "changeset": "changeset",
     "release": "changeset publish"
   },
@@ -58,8 +54,7 @@
     "node": ">=20.0.0"
   },
   "files": [
-    "*.js",
-    "bin",
-    "dist"
+    "dist",
+    "run.js"
   ]
 }
