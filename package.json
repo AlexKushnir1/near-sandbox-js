@@ -18,10 +18,10 @@
   "license": "MIT",
   "dependencies": {
     "@near-js/tokens": "^2.2.2",
-    "got": "^11.8.6",
+    "got": "^14.6.6",
     "json-merge-patch": "^1.0.2",
     "proper-lockfile": "^4.1.2",
-    "tar": "^6.2.0",
+    "tar": "7.5.9",
     "tmp-promise": "^3.0.3"
   },
   "devDependencies": {
@@ -35,9 +35,8 @@
     "@near-js/providers": "2.2.5",
     "@near-js/signers": "2.2.5",
     "@types/json-merge-patch": "^1.0.0",
-    "@types/node": "20.0.0",
+    "@types/node": "20.19.0",
     "@types/proper-lockfile": "^4.1.4",
-    "@types/tar": "^4.0.5",
     "ava": "6.2.0",
     "near-hello": "0.5.1",
     "ts-node": "^10.9.2",
