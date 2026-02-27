@@ -1,13 +1,13 @@
 import { DirectoryResult } from "tmp-promise";
-import { initConfigsWithVersion, spawnWithArgsAndVersion } from "../binary/binaryExecution";
-import { overrideConfigs, SandboxConfig } from "./config";
+import { initConfigsWithVersion, spawnWithArgsAndVersion } from "../binary/binaryExecution.js";
+import { overrideConfigs, SandboxConfig } from "./config.js";
 import { ChildProcess } from "child_process";
-import { acquireOrLockPort, createTmpDir, dumpStateFromPath, rpcSocket } from "./sandboxUtils";
+import { acquireOrLockPort, createTmpDir, dumpStateFromPath, rpcSocket } from "./sandboxUtils.js";
 import { unlock } from "proper-lockfile";
 import { rm } from "fs/promises";
-import { SandboxErrors, TypedError } from "../errors";
+import { SandboxErrors, TypedError } from "../errors.js";
 import got from "got";
-import { DEFAULT_NEAR_SANDBOX_VERSION } from "../constants";
+import { DEFAULT_NEAR_SANDBOX_VERSION } from "../constants.js";
 
 // Re-export for backwards compatibility
 export { DEFAULT_NEAR_SANDBOX_VERSION };

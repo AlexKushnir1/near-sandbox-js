@@ -3,8 +3,8 @@ import { JsonRpcProvider } from "@near-js/providers";
 import { Account } from "@near-js/accounts";
 import { KeyPairSigner } from "@near-js/signers";
 import { KeyPair } from "@near-js/crypto";
-import { Sandbox } from '../src/sandbox/Sandbox';
-import { DEFAULT_ACCOUNT_ID, DEFAULT_PRIVATE_KEY } from '../src/sandbox/config';
+import { Sandbox } from '../src/sandbox/Sandbox.js';
+import { DEFAULT_ACCOUNT_ID, DEFAULT_PRIVATE_KEY } from '../src/sandbox/config.js';
 import { readFileSync } from 'fs';
 
 const test = anyTest as TestFn<{

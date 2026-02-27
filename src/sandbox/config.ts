@@ -2,7 +2,7 @@ import { NEAR } from "@near-js/tokens";
 import { join } from "path";
 import { apply } from "json-merge-patch"
 import * as fs from "fs/promises";
-import { SandboxErrors, TypedError } from "../errors";
+import { SandboxErrors, TypedError } from "../errors.js";
 
 /*
   * Network specific configurations used to modify behavior inside a chain.

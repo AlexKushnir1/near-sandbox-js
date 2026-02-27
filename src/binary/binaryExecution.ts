@@ -1,8 +1,8 @@
-import { fileExists } from "./binaryUtils";
+import { fileExists } from "./binaryUtils.js";
 import { ChildProcess, spawn, StdioOptions } from "child_process";
-import { ensureBinWithVersion } from "./binary";
+import { ensureBinWithVersion } from "./binary.js";
 import { join } from "path";
-import { TypedError } from "../errors";
+import { TypedError } from "../errors.js";
 
 // initializes a sandbox with the specified version in the provided directory path
 export async function initConfigsWithVersion(version: string, dirPath: string): Promise<void> {

@@ -4,11 +4,11 @@ import * as net from "net";
 import { join } from "path";
 import { tmpdir } from "os";
 import { lock } from 'proper-lockfile';
-import { TcpAndLockErrors, TypedError } from "../errors";
-import { spawnWithArgsAndVersion } from "../binary/binaryExecution";
+import { TcpAndLockErrors, TypedError } from "../errors.js";
+import { spawnWithArgsAndVersion } from "../binary/binaryExecution.js";
 import { readFile } from "fs/promises";
 import { dir } from "tmp-promise";
-import { DEFAULT_NEAR_SANDBOX_VERSION } from "../constants";
+import { DEFAULT_NEAR_SANDBOX_VERSION } from "../constants.js";
 
 const DEFAULT_RPC_HOST = '127.0.0.1';
 

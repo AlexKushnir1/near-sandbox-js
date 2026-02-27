@@ -5,12 +5,12 @@
  * Also shows how to create a new account and send tokens to it.
  */
 import test from 'ava';
-import { Sandbox } from '../src/sandbox/Sandbox';
+import { Sandbox } from '../src/sandbox/Sandbox.js';
 import { KeyPair } from '@near-js/crypto';
 import { JsonRpcProvider, Provider } from '@near-js/providers';
 import { Account } from '@near-js/accounts';
 import { KeyPairSigner } from '@near-js/signers';
-import { DEFAULT_ACCOUNT_ID, DEFAULT_BALANCE, DEFAULT_PRIVATE_KEY } from '../src/sandbox/config';
+import { DEFAULT_ACCOUNT_ID, DEFAULT_BALANCE, DEFAULT_PRIVATE_KEY } from '../src/sandbox/config.js';
 import { NEAR } from '@near-js/tokens';
 
 test('create a new account and send tokens', async t => {
