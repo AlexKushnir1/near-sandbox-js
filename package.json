@@ -25,7 +25,6 @@
     "tmp-promise": "^3.0.3"
   },
   "devDependencies": {
-    "@ava/typescript": "^6.0.0",
     "@changesets/changelog-github": "0.4.6",
     "@changesets/cli": "2.24.4",
     "@commitlint/cli": "17.0.3",
@@ -37,13 +36,12 @@
     "@types/json-merge-patch": "^1.0.0",
     "@types/node": "20.19.0",
     "@types/proper-lockfile": "^4.1.4",
-    "ava": "6.2.0",
     "near-hello": "0.5.1",
-    "ts-node": "^10.9.2",
-    "typescript": "5.4.5"
+    "typescript": "5.4.5",
+    "vitest": "^4.0.18"
   },
   "scripts": {
-    "test": "DEFAULT_FINALITY=optimistic ava",
+    "test": "DEFAULT_FINALITY=optimistic vitest run",
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "changeset": "changeset",
