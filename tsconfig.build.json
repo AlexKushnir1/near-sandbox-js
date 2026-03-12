@@ -23,5 +23,5 @@
     "noUnusedLocals": true,
     "allowUnusedLabels": false,
     "allowUnreachableCode": false
-  },
+  }
 }

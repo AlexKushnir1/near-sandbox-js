@@ -26,7 +26,7 @@ describe('Dumping and restoring sandbox state', () => {
             const wasmContract = readFileSync("node_modules/near-hello/dist/main.wasm");
 
             const newSecretKey = KeyPair.fromRandom("ED25519");
-            await rootAccount.createAccount("alice.sandbox", newSecretKey.getPublicKey(), BigInt(10e24));
+            await rootAccount.createAccount("alice.sandbox", newSecretKey.getPublicKey(), 10n ** 24n);
 
             const newAccount = new Account(
                 "alice.sandbox",
@@ -136,7 +136,7 @@ describe('Dumping and restoring sandbox state', () => {
                 account.createAccount(
                     'alice.sandbox',
                     KeyPair.fromRandom('ED25519').getPublicKey(),
-                    BigInt(10e24)
+                    10n ** 24n
                 )
             ).rejects.toThrow(
                 /Can't create a new account alice\.sandbox, because it already exists/

@@ -1,4 +1,4 @@
-import { describe, it, beforeAll, expect } from 'vitest';
+import { describe, it, beforeAll, expect, afterAll } from 'vitest';
 import { join } from "path";
 import got from "got";
 import { DEFAULT_NEAR_SANDBOX_VERSION, Sandbox } from "../src/sandbox/Sandbox.js";
@@ -20,24 +20,36 @@ describe('Sandbox local binary handling', () => {
     }
   }, 150000);
 
+  afterAll(() => {
+    delete process.env['DIR_TO_DOWNLOAD_BINARY'];
+  });
+
   it("fails to start sandbox if local binary path does not exist", async () => {
-    process.env['NEAR_SANDBOX_BIN_PATH'] = "Not-existing-path";
+    const originalNearSandboxBinPath = process.env['NEAR_SANDBOX_BIN_PATH'];
 
-    const promise = Sandbox.start({});
-
-    await expect(promise).rejects.toBeInstanceOf(TypedError);
-    await expect(promise).rejects.toThrow(
-      /NEAR_SANDBOX_BIN_PATH does not exist\./
-    );
-
-    //restore valid path
-    process.env['NEAR_SANDBOX_BIN_PATH'] = TEST_BIN_PATH;
-    const sandbox = await Sandbox.start({});
     try {
-      const response = await got(`${sandbox.rpcUrl}/status`);
-      expect(response.statusCode).toBe(200);
+      process.env['NEAR_SANDBOX_BIN_PATH'] = "Not-existing-path";
+      const promise = Sandbox.start({});
+      await expect(promise).rejects.toBeInstanceOf(TypedError);
+      await expect(promise).rejects.toThrow(
+        /NEAR_SANDBOX_BIN_PATH does not exist\./
+      );
+
+      // restore valid path for this test
+      process.env['NEAR_SANDBOX_BIN_PATH'] = TEST_BIN_PATH;
+      const sandbox = await Sandbox.start({});
+      try {
+        const response = await got(`${sandbox.rpcUrl}/status`);
+        expect(response.statusCode).toBe(200);
+      } finally {
+        await expect(sandbox.tearDown()).resolves.not.toThrow();
+      }
     } finally {
-      await expect(sandbox.tearDown()).resolves.not.toThrow();
+      if (originalNearSandboxBinPath === undefined) {
+        delete process.env['NEAR_SANDBOX_BIN_PATH'];
+      } else {
+        process.env['NEAR_SANDBOX_BIN_PATH'] = originalNearSandboxBinPath;
+      }
     }
   });
 });

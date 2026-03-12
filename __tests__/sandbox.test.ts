@@ -103,7 +103,7 @@ it.concurrent('Sandbox.rpcUrl is not reachable after stoppage', async () => {
     const sandbox = await Sandbox.start({});
     const rpcUrl = sandbox.rpcUrl;
 
-    await expect(sandbox.stop()).resolves.not.toThrow();
+    await expect(sandbox.tearDown()).resolves.not.toThrow();
     await expect(
         got(`${rpcUrl}/status`, { throwHttpErrors: false })
     ).rejects.toThrow(/ECONNREFUSED/);
