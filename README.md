@@ -8,7 +8,7 @@
 
   <p>
      <a href="https://npmjs.com/near-sandbox"><img src="https://img.shields.io/npm/v/near-sandbox.svg?style=flat-square" alt="Latest Release Version" /></a>
-    <a href="https://npmjs.com/near-sandbox"><img src="https://img.shields.io/npm/d/near-sandbox.svg?style=flat-square" alt="Download" /></a>
+    <a href="https://npmjs.com/near-sandbox"><img src="https://img.shields.io/npm/dm/near-sandbox.svg?style=flat-square" alt="Download" /></a>
   </p>
 </div>
 
@@ -27,7 +27,7 @@ This library provides a simple JavaScript API to quickly download, start, and co
 
 Install the package globally or as a development dependency:
 
-Using npm:
+Using pnpm:
 
 ```bash
 pnpm install --save-dev near-sandbox
@@ -112,6 +112,10 @@ const { Sandbox } = require("near-sandbox");
 
 ### CLI using
 
+- Install package globally with
+
+      pnpm install -g near-sandbox
+
 - Initialize the Sandbox node
 
       near-sandbox --home /tmp/near-sandbox init
@@ -122,7 +126,7 @@ const { Sandbox } = require("near-sandbox");
 
   by default it is running on `http:/127.0.0.1:3030`
 
-* Stop the sandox node. Once you're finished using the sandbox node you can stop it by using <kbd>Ctrl</kbd><kbd>C</kbd>. To clean up the data it generates:
+* Stop the sandbox node. Once you're finished using the sandbox node you can stop it by using <kbd>Ctrl</kbd><kbd>C</kbd>. To clean up the data it generates:
 
       rm -rf /tmp/near-sandbox
 
