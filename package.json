@@ -1,6 +1,6 @@
 {
   "name": "near-sandbox",
-  "version": "0.3.0",
+  "version": "0.2.4",
   "description": "library to run a local NEAR blockchain node for development and testing",
   "repository": "https://github.com/near/near-sandbox-js",
   "author": "Near Inc (team@near.org)",
