@@ -11,7 +11,7 @@ const TEST_BIN_PATH = join(TEST_BIN_DIR, `near-sandbox-${DEFAULT_NEAR_SANDBOX_VE
 describe('Sandbox local binary handling', () => {
   beforeAll(async () => {
     process.env['DIR_TO_DOWNLOAD_BINARY'] = TEST_BIN_DIR;
-    const sandbox = await Sandbox.start({ version: "1.38.0" });
+    const sandbox = await Sandbox.start({});
     try {
       const response = await got(`${sandbox.rpcUrl}/status`);
       expect(response.statusCode).toBe(200);

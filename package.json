@@ -38,7 +38,7 @@
     "@types/proper-lockfile": "^4.1.4",
     "near-hello": "0.5.1",
     "typescript": "5.4.5",
-    "vitest": "^4.0.18"
+    "vitest": "4.0.18"
   },
   "scripts": {
     "test": "DEFAULT_FINALITY=optimistic vitest run",
