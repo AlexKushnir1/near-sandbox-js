@@ -1,4 +1,4 @@
-import { AWSUrl, fileExists } from "./binaryUtils";
+import { AWSUrl, fileExists, getDirname } from "./binaryUtils.js";
 import { join } from "path";
 import { promisify } from "util";
 import * as stream from "stream";
@@ -8,7 +8,7 @@ import { existsSync } from "fs";
 import { lock } from "proper-lockfile";
 import * as fs from "fs/promises";
 import { spawn } from "child_process";
-import { BinaryErrors, TcpAndLockErrors, TypedError } from "../errors";
+import { BinaryErrors, TcpAndLockErrors, TypedError } from "../errors.js";
 import { dir } from "tmp-promise";
 
 const pipeline = promisify(stream.pipeline);
@@ -54,7 +54,7 @@ export async function downloadBin(version: string): Promise<string> {
 // otherwise it will be created in the bin directory of the project
 async function getDownloadPath(version: string): Promise<string> {
     const baseDir = process.env["DIR_TO_DOWNLOAD_BINARY"]
-        ?? join(__dirname, "..", "..", "bin");
+        ?? join(getDirname(import.meta.url), "..", "..", "bin");
     const dirToDownloadBin = join(baseDir, `near-sandbox-${version}`);
 
     await fs.mkdir(dirToDownloadBin, { recursive: true });

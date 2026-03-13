@@ -1,0 +1,27 @@
+{
+  "include": ["src/**/*.ts"],
+  "compilerOptions": {
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "isolatedModules": true,
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "alwaysStrict": true,
+    "outDir": "./dist",
+    "declaration": true,
+    "types": ["node"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "exactOptionalPropertyTypes": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedParameters": true,
+    "forceConsistentCasingInFileNames": true,
+    "noUnusedLocals": true,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false
+  }
+}
